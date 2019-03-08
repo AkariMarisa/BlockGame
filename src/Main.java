@@ -29,55 +29,83 @@ public class Main {
 
     /**
      * Initialize a empty table with full of white block and a black block.
-     * @param width Width of table.
+     *
+     * @param width  Width of table.
      * @param height Height of table.
      * @return A block table for game.
      */
     private char[][] initTable(int width, int height) {
         char[][] t = new char[width][height];
-        //Make it all white
+        //Make it all black
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                t[i][j] = WHITE_BLOCK;
+                t[i][j] = BLACK_BLOCK;
             }
         }
 
-        //Change one block to black
-        int posX = new Random().nextInt(width);
-        int posY = new Random().nextInt(height);
-        t[posX][posY] = BLACK_BLOCK;
+        //Change three block to white
+        int whiteBlocksNumber = 0;
+        while (whiteBlocksNumber < 3) {
+            int posX = new Random().nextInt(width);
+            int posY = new Random().nextInt(height);
+            if (t[posX][posY] != WHITE_BLOCK) {
+                t[posX][posY] = WHITE_BLOCK;
+                whiteBlocksNumber += 1;
+            } else {
+                continue;
+            }
+        }
 
         return t;
     }
 
     /**
      * The mainly function for block game, changing blocks color on table.
+     *
      * @param table A initialized table for game.
      * @return The table after change.
      */
     private char[][] changeBlocks(char[][] table) {
+        //Clone current table
+        char[][] finalTable = cloneArrary(table, new char[table.length][table[0].length]);
         for (int i = 0; i < table.length; i++) {
             for (int j = 0; j < table[i].length; j++) {
                 int whiteBlockNumber = countWhiteBlocksAround(table, i, j);
                 if (whiteBlockNumber < 2) {
-                    table[i][j] = BLACK_BLOCK;
+                    finalTable[i][j] = BLACK_BLOCK;
                 } else if (whiteBlockNumber == 2) {
                     //Do nothing
                 } else if (whiteBlockNumber == 3) {
-                    table[i][j] = WHITE_BLOCK;
+                    finalTable[i][j] = WHITE_BLOCK;
                 } else {
-                    table[i][j] = BLACK_BLOCK;
+                    finalTable[i][j] = BLACK_BLOCK;
                 }
             }
         }
-        return table;
+        return finalTable;
+    }
+
+    /**
+     * Clone character array to a new array.
+     *
+     * @param src Source array.
+     * @return New array cloned from source array.
+     */
+    private char[][] cloneArrary(char[][] src, char[][] dest) {
+        for (int i = 0; i < src.length; i++) {
+            if (src[i].length >= 0) {
+                System.arraycopy(src[i], 0, dest[i], 0, src[i].length);
+            }
+        }
+        return dest;
     }
 
     /**
      * Count how many white blocks around current block.
+     *
      * @param table Table for game.
-     * @param posX Current block's X position.
-     * @param posY Current block's Y position.
+     * @param posX  Current block's X position.
+     * @param posY  Current block's Y position.
      * @return White blocks number.
      */
     private int countWhiteBlocksAround(char[][] table, int posX, int posY) {
@@ -97,9 +125,10 @@ public class Main {
 
     /**
      * Get block with position.
+     *
      * @param table Table for game.
-     * @param posX Block's X position.
-     * @param posY Block's Y position.
+     * @param posX  Block's X position.
+     * @param posY  Block's Y position.
      * @return Block or blank character.
      */
     private char getBlock(char[][] table, int posX, int posY) {
@@ -113,6 +142,7 @@ public class Main {
 
     /**
      * Count how many white blocks.
+     *
      * @param blocks White blocks with blank character.
      * @return White blocks number.
      */
@@ -128,6 +158,7 @@ public class Main {
 
     /**
      * Print current table to stdout.
+     *
      * @param table Table which needs to print.
      */
     private void printTable(char[][] table) {
